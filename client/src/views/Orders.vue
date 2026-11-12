@@ -29,6 +29,58 @@
 
       <div class="card">
         <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submitted.title') }} ({{ restockOrders.length }})</h3>
+        </div>
+        <div v-if="restockLoading" class="loading">{{ t('common.loading') }}</div>
+        <div v-else-if="restockError" class="error">{{ restockError }}</div>
+        <div v-else-if="restockOrders.length === 0" class="empty-state">
+          <p>{{ t('orders.submitted.empty') }}</p>
+          <router-link to="/restocking" class="empty-link">{{ t('orders.submitted.goToRestocking') }}</router-link>
+        </div>
+        <div v-else class="table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th class="col-order-number">{{ t('orders.submitted.table.orderNumber') }}</th>
+                <th class="col-date">{{ t('orders.submitted.table.submittedDate') }}</th>
+                <th class="col-items">{{ t('orders.submitted.table.items') }}</th>
+                <th class="col-value">{{ t('orders.submitted.table.totalValue') }}</th>
+                <th class="col-lead">{{ t('orders.submitted.table.leadTime') }}</th>
+                <th class="col-date">{{ t('orders.submitted.table.expectedDelivery') }}</th>
+                <th class="col-status">{{ t('orders.submitted.table.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in restockOrders" :key="order.id">
+                <td class="col-order-number"><strong>{{ order.order_number }}</strong></td>
+                <td class="col-date">{{ formatDate(order.created_date) }}</td>
+                <td class="col-items">
+                  <details class="items-details">
+                    <summary class="items-summary">
+                      {{ t('orders.itemsCount', { count: order.items.length }) }}
+                    </summary>
+                    <div class="items-dropdown">
+                      <div v-for="item in order.items" :key="item.sku" class="item-entry">
+                        <span class="item-name">{{ translateProductName(item.name) }}</span>
+                        <span class="item-meta">{{ item.sku }} - {{ t('orders.quantity') }}: {{ item.quantity }} @ {{ formatMoneyPrecise(item.unit_cost) }}</span>
+                      </div>
+                    </div>
+                  </details>
+                </td>
+                <td class="col-value"><strong>{{ formatMoney(order.total_value) }}</strong></td>
+                <td class="col-lead">{{ t('orders.submitted.leadTimeDays', { days: order.lead_time_days }) }}</td>
+                <td class="col-date">{{ formatDate(order.expected_delivery) }}</td>
+                <td class="col-status">
+                  <span class="badge info">{{ t('status.submitted') }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
           <h3 class="card-title">{{ t('orders.allOrders') }} ({{ orders.length }})</h3>
         </div>
         <div class="table-container">
@@ -83,6 +135,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { formatCurrency, formatCurrencyWithDecimals } from '../utils/currency'
 
 export default {
   name: 'Orders',
@@ -95,6 +148,29 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockOrders = ref([])
+    const restockLoading = ref(true)
+    const restockError = ref(null)
+
+    const formatMoney = (amount) => formatCurrency(Number(amount) || 0, currentCurrency.value)
+    const formatMoneyPrecise = (amount) =>
+      formatCurrencyWithDecimals(Number(amount) || 0, currentCurrency.value, 2)
+
+    // Restock orders are not affected by the global filters and load independently,
+    // so a failure here does not break the rest of the page
+    const loadRestockOrders = async () => {
+      try {
+        restockLoading.value = true
+        restockError.value = null
+        const data = await api.getRestockOrders()
+        restockOrders.value = Array.isArray(data) ? data : []
+      } catch (err) {
+        restockError.value = t('orders.submitted.loadError')
+        console.error('Failed to load restock orders:', err)
+      } finally {
+        restockLoading.value = false
+      }
+    }
 
     // Use shared filters
     const {
@@ -146,20 +222,30 @@ export default {
     const formatDate = (dateString) => {
       const { currentLocale } = useI18n()
       const locale = currentLocale.value === 'ja' ? 'ja-JP' : 'en-US'
-      return new Date(dateString).toLocaleDateString(locale, {
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) return '-'
+      return date.toLocaleDateString(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
       })
     }
 
-    onMounted(loadOrders)
+    onMounted(() => {
+      loadOrders()
+      loadRestockOrders()
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      restockOrders,
+      restockLoading,
+      restockError,
+      formatMoney,
+      formatMoneyPrecise,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -201,6 +287,29 @@ export default {
 
 .col-value {
   width: 120px;
+}
+
+.col-lead {
+  width: 110px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-size: 0.938rem;
+}
+
+.empty-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.empty-link:hover {
+  text-decoration: underline;
 }
 
 /* Items details styling */

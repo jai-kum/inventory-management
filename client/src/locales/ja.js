@@ -6,6 +6,7 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充発注',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -111,6 +112,22 @@ export default {
     avgOrderValue: '平均注文額',
     onTimeDelivery: '定時配達',
     itemsCount: '{count}件',
+    submitted: {
+      title: '発注済み補充注文',
+      empty: '送信された補充発注はまだありません。',
+      goToRestocking: '補充発注を計画する',
+      loadError: '発注済み注文の読み込みに失敗しました',
+      leadTimeDays: '{days}日',
+      table: {
+        orderNumber: '注文番号',
+        submittedDate: '発注日',
+        items: '品目',
+        totalValue: '合計金額',
+        leadTime: 'リードタイム',
+        expectedDelivery: '予定配達日',
+        status: 'ステータス'
+      }
+    },
     quantity: '数量',
     table: {
       orderNumber: '注文番号',
@@ -188,6 +205,53 @@ export default {
     }
   },
 
+  // Restocking
+  restocking: {
+    title: '補充発注',
+    description: '需要予測に基づき、予算内で補充発注を計画します',
+    budget: '予算',
+    budgetLabel: '補充予算',
+    budgetInputLabel: '予算額（{currency}）',
+    recommendedTotal: '推奨発注合計',
+    remainingBudget: '残り予算',
+    coverage: '必要量に対するカバー率',
+    coverageDetail: '{needed} 中 {funded}',
+    recommendations: '推奨発注',
+    updating: '更新中...',
+    noNeed: '予測需要は手持在庫と発注済み数量で充足しています。補充の必要はありません。',
+    itemsToOrder: '{count}品目、{total}',
+    nothingToOrder: '少なくとも1品目を発注できるよう予算を増やしてください。',
+    placeOrder: '発注する',
+    placing: '発注中...',
+    partial: '一部',
+    notFunded: '予算外',
+    loadError: '補充推奨の読み込みに失敗しました',
+    submitError: '補充発注に失敗しました。もう一度お試しください。',
+    orderPlaced: '発注完了',
+    orderPlacedDetail: '補充発注 {orderNumber} を送信しました。',
+    orderNumber: '注文番号',
+    orderTotal: '発注合計',
+    leadTime: 'リードタイム',
+    expectedDelivery: '予定配達日',
+    daysCount: '{days}日',
+    viewOrders: '注文一覧で確認',
+    dismiss: '閉じる',
+    table: {
+      priority: '優先順位',
+      item: '品目',
+      category: 'カテゴリ',
+      trend: '傾向',
+      forecastedDemand: '予測需要',
+      onHand: '手持在庫',
+      onOrder: '発注済み',
+      needed: '必要数',
+      recommendedQty: '推奨数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTimeDays: 'リードタイム（日）'
+    }
+  },
+
   // Filters
   filters: {
     timePeriod: '期間',
@@ -204,6 +268,7 @@ export default {
     shipped: '出荷済み',
     processing: '処理中',
     backordered: 'バックオーダー',
+    submitted: '発注済み',
     inStock: '在庫あり',
     lowStock: '在庫僅少',
     adequate: '適量'
