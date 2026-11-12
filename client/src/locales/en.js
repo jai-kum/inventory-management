@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -111,6 +112,22 @@ export default {
     avgOrderValue: 'Avg Order Value',
     onTimeDelivery: 'On-Time Delivery',
     itemsCount: '{count} items',
+    submitted: {
+      title: 'Submitted Orders',
+      empty: 'No restock orders have been submitted yet.',
+      goToRestocking: 'Plan a restock order',
+      loadError: 'Failed to load submitted orders',
+      leadTimeDays: '{days} days',
+      table: {
+        orderNumber: 'Order Number',
+        submittedDate: 'Submitted',
+        items: 'Items',
+        totalValue: 'Total Value',
+        leadTime: 'Lead Time',
+        expectedDelivery: 'Expected Delivery',
+        status: 'Status'
+      }
+    },
     quantity: 'Qty',
     table: {
       orderNumber: 'Order Number',
@@ -188,6 +205,53 @@ export default {
     }
   },
 
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Plan restock orders from demand forecasts within a budget',
+    budget: 'Budget',
+    budgetLabel: 'Restocking budget',
+    budgetInputLabel: 'Budget amount ({currency})',
+    recommendedTotal: 'Recommended Order Total',
+    remainingBudget: 'Remaining Budget',
+    coverage: 'Coverage of Total Need',
+    coverageDetail: '{funded} of {needed}',
+    recommendations: 'Recommendations',
+    updating: 'Updating...',
+    noNeed: 'Forecasted demand is fully covered by stock on hand and on order. Nothing to restock.',
+    itemsToOrder: '{count} items, {total}',
+    nothingToOrder: 'Increase the budget to fund at least one item.',
+    placeOrder: 'Place Order',
+    placing: 'Placing Order...',
+    partial: 'Partial',
+    notFunded: 'Not funded',
+    loadError: 'Failed to load restocking recommendations',
+    submitError: 'Failed to place restock order. Please try again.',
+    orderPlaced: 'Order Placed',
+    orderPlacedDetail: 'Restock order {orderNumber} has been submitted.',
+    orderNumber: 'Order Number',
+    orderTotal: 'Order Total',
+    leadTime: 'Lead Time',
+    expectedDelivery: 'Expected Delivery',
+    daysCount: '{days} days',
+    viewOrders: 'View in Orders',
+    dismiss: 'Dismiss',
+    table: {
+      priority: 'Priority',
+      item: 'Item',
+      category: 'Category',
+      trend: 'Trend',
+      forecastedDemand: 'Forecast',
+      onHand: 'On Hand',
+      onOrder: 'On Order',
+      needed: 'Needed',
+      recommendedQty: 'Recommended Qty',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTimeDays: 'Lead Time (Days)'
+    }
+  },
+
   // Filters
   filters: {
     timePeriod: 'Time Period',
@@ -204,6 +268,7 @@ export default {
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'
